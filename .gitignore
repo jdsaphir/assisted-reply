@@ -1,5 +1,10 @@
 # Secrets and local state never go in git
 .env
+.env.*
+!.env.example
+# Editor swap and backup files can hold a copy of .env
+*.sw[a-p]
+*~
 .venv/
 __pycache__/
 *.py[cod]
