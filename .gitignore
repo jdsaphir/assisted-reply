@@ -1,0 +1,11 @@
+# Secrets and local state never go in git
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+data/
+*.sqlite3
+# Personal memory files (templates live in memory.example/)
+memory/
