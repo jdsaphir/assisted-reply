@@ -15,6 +15,7 @@ from assisted_reply.commands import (
     register,
     start_draft,
 )
+from assisted_reply.drafts import DRAFT_TTL
 from assisted_reply.history import INCOMING
 from assisted_reply.prompt import DM, GROUP_DM, SERVER
 from assisted_reply.views import PRIVATE
@@ -171,6 +172,7 @@ async def test_note_modal_runs_the_same_flow_with_the_note(app):
     assert modal.note.to_component_dict()["label"] == "Context for this reply (only you see this)"
     assert modal.note.required is False
     assert modal.custom_id == "ar:note:31"
+    assert modal.timeout == DRAFT_TTL
     modal.note._value = "say I'm free after 3"
     submit = make_interaction(interaction_id=32)
     submit.channel = SimpleNamespace(type=discord.ChannelType.private)

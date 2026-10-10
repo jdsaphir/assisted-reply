@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import discord
 from discord import app_commands
 
-from .drafts import Draft, make_custom_id
+from .drafts import DRAFT_TTL, Draft, make_custom_id
 from .history import INCOMING
 from .prompt import DM, GROUP_DM, SERVER, Location
 from .views import ensure_owner, generate_and_show, notify
@@ -92,7 +92,10 @@ async def start_draft(
 
 class NoteModal(discord.ui.Modal):
     def __init__(self, app: App, message: discord.Message, modal_id: int) -> None:
-        super().__init__(title="Assisted Reply", custom_id=make_custom_id("note", modal_id))
+        # Same lifetime as the hold in the draft store: after it, a submit gets the "expired" reply.
+        super().__init__(
+            title="Assisted Reply", timeout=DRAFT_TTL, custom_id=make_custom_id("note", modal_id)
+        )
         self.app = app
         self.message = message
         self.note: discord.ui.TextInput = discord.ui.TextInput(

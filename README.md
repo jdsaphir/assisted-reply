@@ -141,7 +141,7 @@ Right-click (or long-press on mobile) any message → **Apps** → **Assisted Re
 - Each message you run the app on is sent to Anthropic, together with your memory files, to write the draft.
 - The app keeps a small local SQLite log (`DB_PATH`): for each channel, the messages you ran it on and the
   replies you sent, so later drafts have some continuity. Only the last `HISTORY_LIMIT` exchanges per channel
-  are kept. Delete the file to clear it.
+  are kept, plus one message. Delete the file to clear it.
 - `.env`, `memory/` and `data/` are git-ignored. Message text is never written to the application log.
 
 ## Hosting it always-on

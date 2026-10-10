@@ -44,7 +44,9 @@ class History:
         self.history_limit = history_limit
         # One exchange is the incoming message plus the reply.
         self.rows_in_prompt = history_limit * 2
-        self.rows_kept = max(self.rows_in_prompt, 2)
+        # One more than the prompt uses: the message being answered is stored before its prompt is built
+        # and left out of it, so it must not push the oldest exchange's first half out.
+        self.rows_kept = max(self.rows_in_prompt + 1, 2)
 
     async def init(self) -> None:
         """Create the folder (700), the file (600) and the schema if they don't exist yet."""

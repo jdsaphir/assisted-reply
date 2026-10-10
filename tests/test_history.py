@@ -43,7 +43,7 @@ async def test_same_message_is_logged_once_and_current_one_is_excluded(tmp_path)
 
 
 async def test_trims_old_rows_per_channel(tmp_path):
-    history = History(tmp_path / "log.sqlite3", 2)  # 2 exchanges = 4 rows
+    history = History(tmp_path / "log.sqlite3", 2)  # 2 exchanges = 4 rows in the prompt, 5 stored
     await history.init()
     for i in range(1, 11):
         await add(history, INCOMING, i, f"message {i}")
@@ -55,7 +55,18 @@ async def test_trims_old_rows_per_channel(tmp_path):
 
     async with aiosqlite.connect(tmp_path / "log.sqlite3") as db:
         cursor = await db.execute("SELECT COUNT(*) FROM messages WHERE channel_id = 444")
-        assert (await cursor.fetchone())[0] == 4
+        assert (await cursor.fetchone())[0] == 5
+
+
+async def test_current_message_does_not_push_out_half_an_exchange(tmp_path):
+    history = History(tmp_path / "log.sqlite3", 2)
+    await history.init()
+    for i in range(1, 4):
+        await add(history, INCOMING, i * 10, f"question {i}")
+        entries = await history.recent(444, exclude_message_id=i * 10)
+        assert len(entries) == min(2 * (i - 1), 4)
+        assert not entries or entries[0].kind == INCOMING
+        await add(history, SENT, i * 10 + 1, f"answer {i}")
 
 
 async def test_limit_zero_puts_nothing_in_the_prompt(tmp_path):

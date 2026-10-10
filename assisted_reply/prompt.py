@@ -129,7 +129,7 @@ def build_user_message(
     if previous_draft:
         parts.append(
             "I rejected this draft. Don't repeat it, word the reply differently:\n"
-            f"<previous_draft>\n{previous_draft}\n</previous_draft>"
+            f"<previous_draft>\n{neutralize(previous_draft)}\n</previous_draft>"
         )
 
     parts.append("Write my reply to the incoming message now. Output only the reply text.")
