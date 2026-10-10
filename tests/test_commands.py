@@ -1,3 +1,4 @@
+from dataclasses import replace
 from datetime import UTC, datetime
 from types import SimpleNamespace
 from unittest.mock import MagicMock
@@ -141,6 +142,7 @@ async def test_server_without_external_apps_warns_up_front(app):
 
 
 async def test_draft_is_cut_to_fit_with_the_mention(app):
+    app.config = replace(app.config, mention_author_in_servers=True)
     app.llm.draft.return_value = "z" * 5000
     interaction = server_interaction()
     await start_draft(app, interaction, message())

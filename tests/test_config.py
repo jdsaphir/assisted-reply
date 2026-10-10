@@ -11,7 +11,7 @@ def test_defaults():
     assert config.anthropic_model == "claude-haiku-5-5"
     assert config.anthropic_effort == "low"
     assert config.history_limit == 6
-    assert config.mention_author_in_servers is True
+    assert config.mention_author_in_servers is False
     assert str(config.db_path) == "data/assisted_reply.sqlite3"
 
 
@@ -40,6 +40,7 @@ def test_empty_effort_means_none_and_bad_effort_fails():
 
 
 def test_mention_switch():
+    assert load_config({**BASE, "MENTION_AUTHOR_IN_SERVERS": "on"}).mention_author_in_servers is True
     assert load_config({**BASE, "MENTION_AUTHOR_IN_SERVERS": "off"}).mention_author_in_servers is False
     with pytest.raises(ConfigError, match="MENTION_AUTHOR_IN_SERVERS"):
         load_config({**BASE, "MENTION_AUTHOR_IN_SERVERS": "maybe"})

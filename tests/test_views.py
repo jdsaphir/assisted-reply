@@ -1,3 +1,4 @@
+from dataclasses import replace
 from unittest.mock import AsyncMock
 
 import discord
@@ -133,7 +134,16 @@ async def test_send_posts_publicly_then_marks_sent(app, make_draft):
     assert [(e.kind, e.content) for e in entries] == [(SENT, "sure, saturday works")]
 
 
-async def test_send_in_server_mentions_only_the_author(app, make_draft):
+async def test_send_in_server_pings_nobody_by_default(app, make_draft):
+    draft = make_draft(server=True, text="@everyone the changelog is pinned")
+    await DraftView(app, draft).send(make_interaction())
+    args, kwargs = draft.origin.followup.send.await_args
+    assert args[0] == "@everyone the changelog is pinned"
+    assert kwargs["allowed_mentions"].to_dict() == {"parse": [], "users": []}
+
+
+async def test_send_in_server_with_the_mention_switch_pings_only_the_author(app, make_draft):
+    app.config = replace(app.config, mention_author_in_servers=True)
     draft = make_draft(server=True, text="@everyone the changelog is pinned")
     await DraftView(app, draft).send(make_interaction())
     args, kwargs = draft.origin.followup.send.await_args
@@ -182,6 +192,7 @@ async def test_forced_ephemeral_is_detected_and_draft_stays_copyable(app, make_d
 
 
 async def test_edit_modal_is_prefilled_and_sends_the_edited_text(app, make_draft):
+    app.config = replace(app.config, mention_author_in_servers=True)
     draft = make_draft(server=True)
     modal = EditModal(app, draft)
     assert modal.reply.default == "sure, saturday works"

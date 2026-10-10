@@ -98,7 +98,7 @@ The others are optional:
 | `MEMORY_MAX_CHARS` | `24000` | Cap on memory text per prompt. A warning is logged when files are cut. |
 | `DB_PATH` | `data/assisted_reply.sqlite3` | The local log (see Privacy). |
 | `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`. |
-| `MENTION_AUTHOR_IN_SERVERS` | `true` | Start a reply posted in a server with a mention of the person answered. |
+| `MENTION_AUTHOR_IN_SERVERS` | `false` | Also start a reply posted in a server with a mention of the person answered. |
 
 At startup the app checks the configuration and stops with the name of any missing or malformed key.
 
@@ -126,8 +126,8 @@ Right-click (or long-press on mobile) any message → **Apps** → **Assisted Re
 
 - A reply posted from the app is labelled by Discord with "*you* used Assisted Reply" and the APP tag. That
   label comes from Discord and cannot be removed.
-- An interaction response cannot be a real Discord reply to the message, so in servers the posted text starts
-  with a mention of the person you are answering (turn it off with `MENTION_AUTHOR_IN_SERVERS=false`). Nobody
+- Discord shows the posted message as a reply to the message you ran the command on. Set
+  `MENTION_AUTHOR_IN_SERVERS=true` if you also want the text to start with a mention of that person. Nobody
   else is ever pinged: `@everyone`, `@here`, role mentions and other user mentions in a draft stay inert.
 - Servers can deny members the **Use External Apps** permission. Discord then shows the app's messages only to
   you. The app warns you on the draft when it sees this, and if a send turns out to be hidden it tells you and

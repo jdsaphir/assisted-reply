@@ -34,7 +34,7 @@ class Config:
     memory_max_chars: int = 24000
     db_path: Path = Path("data/assisted_reply.sqlite3")
     log_level: str = "INFO"
-    mention_author_in_servers: bool = True
+    mention_author_in_servers: bool = False
 
 
 def load_config(env: Mapping[str, str] | None = None) -> Config:
@@ -101,11 +101,11 @@ def load_config(env: Mapping[str, str] | None = None) -> Config:
     if log_level not in LOG_LEVELS:
         problems.append(f"LOG_LEVEL must be one of: {', '.join(LOG_LEVELS)}")
 
-    mention = True
+    mention = False
     mention_raw = raw("MENTION_AUTHOR_IN_SERVERS").lower()
-    if mention_raw in _FALSE:
-        mention = False
-    elif mention_raw and mention_raw not in _TRUE:
+    if mention_raw in _TRUE:
+        mention = True
+    elif mention_raw and mention_raw not in _FALSE:
         problems.append("MENTION_AUTHOR_IN_SERVERS must be true or false")
 
     config = Config(

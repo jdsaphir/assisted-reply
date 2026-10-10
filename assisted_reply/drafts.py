@@ -47,7 +47,7 @@ def fit(text: str, limit: int = MESSAGE_LIMIT) -> str:
 
 
 def mention_prefix(*, in_server: bool, author_id: int, owner_id: int, enabled: bool) -> str:
-    """Interaction responses can't be real Discord replies, so in servers a mention shows who is answered."""
+    """The optional mention that starts a reply posted in a server (never in DMs, never to myself)."""
     if in_server and enabled and author_id != owner_id:
         return f"<@{author_id}> "
     return ""
